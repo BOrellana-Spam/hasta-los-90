@@ -722,4 +722,241 @@
       <div class="field">
         <label>Color de acento</label>
         <div class="swatches" id="swatches">
-          <div class="swatch" data-color="#f59e0b" data-soft="rgba(245,158
+          <div class="swatch" data-color="#f59e0b" data-soft="rgba(245,158,11,0.14)" style="background:#f59e0b"></div>
+          <div class="swatch" data-color="#ffffff" data-soft="rgba(255,255,255,0.12)" style="background:#ffffff"></div>
+          <div class="swatch" data-color="#38bdf8" data-soft="rgba(56,189,248,0.14)" style="background:#38bdf8"></div>
+          <div class="swatch" data-color="#10b981" data-soft="rgba(16,185,129,0.14)" style="background:#10b981"></div>
+        </div>
+      </div>
+      <button class="save-btn" onclick="saveConfig()">Guardar cambios</button>
+    </div>
+  </div>
+
+  <script>
+    const QUOTES = [
+      { t: "No es que tengamos poco tiempo, sino que perdemos mucho.", a: "Séneca" },
+      { t: "Podrías dejar la vida ahora mismo. Que eso determine lo que haces, dices y piensas.", a: "Marco Aurelio" },
+      { t: "El problema es que crees que tienes tiempo.", a: "Proverbio budista" },
+      { t: "Mientras posponemos, la vida pasa de largo.", a: "Séneca" },
+      { t: "No cuentes los días, haz que los días cuenten.", a: "Muhammad Ali" },
+      { t: "Recordar que vas a morir es la mejor forma de evitar la trampa de pensar que tienes algo que perder.", a: "Steve Jobs" },
+      { t: "La vida es muy corta para pasarla discutiendo por lo que no importa.", a: "Memento Mori" },
+      { t: "Cada día que pasa es un día menos en tu cuenta, no uno más.", a: "Séneca" },
+      { t: "Actúa como si lo que haces marcara la diferencia. Porque la marca.", a: "William James" },
+      { t: "Algún día harás algo por última vez sin saber que es la última vez.", a: "Sam Harris" }
+    ];
+
+    let quoteIdx = Math.floor(Date.now() / 86400000) % QUOTES.length;
+    let selectedAccent = localStorage.getItem('accent') || '#f59e0b';
+    let selectedSoft = localStorage.getItem('accentSoft') || 'rgba(245,158,11,0.14)';
+
+    function getConfig() {
+      return {
+        dob: localStorage.getItem('dob') || '1980-06-19',
+        retireAge: parseInt(localStorage.getItem('retireAge') || '65', 10),
+        age: parseInt(localStorage.getItem('targetAge') || '90', 10)
+      };
+    }
+
+    function applyTheme() {
+      document.documentElement.style.setProperty('--accent', selectedAccent);
+      document.documentElement.style.setProperty('--accent-soft', selectedSoft);
+    }
+
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderQuote() {
+      const q = QUOTES[quoteIdx];
+      document.getElementById('quoteText').textContent = `“${q.t}”`;
+      document.getElementById('quoteAuthor').textContent = `— ${q.a}`;
+    }
+
+    function nextQuote() {
+      quoteIdx = (quoteIdx + 1) % QUOTES.length;
+      renderQuote();
+    }
+
+    function countAnnualEvent(now, target, month, day) {
+      let count = 0;
+      for (let y = now.getFullYear(); y <= target.getFullYear(); y++) {
+        const d = new Date(y, month - 1, day);
+        if (d >= now && d <= target) count++;
+      }
+      return count;
+    }
+
+    function buildStatic() {
+      const { dob, retireAge, age } = getConfig();
+      const birth = new Date(dob + 'T00:00:00');
+      const target = new Date(birth.getFullYear() + age, birth.getMonth(), birth.getDate());
+      const retireDate = new Date(birth.getFullYear() + retireAge, birth.getMonth(), birth.getDate());
+      const workStart = new Date(birth.getFullYear() + 18, birth.getMonth(), birth.getDate());
+      const now = new Date();
+
+      const diffMs = Math.max(0, target - now);
+      const days = Math.floor(diffMs / 86400000);
+      const weeks = Math.floor(days / 7);
+      const yearsNum = diffMs / (86400000 * 365.2425);
+      const currentAge = Math.floor((now - birth) / (86400000 * 365.2425));
+
+      document.getElementById('headerTitle').textContent = `MEMENTO · ${age}`;
+      document.getElementById('remYears').textContent = yearsNum.toFixed(1).replace('.', ',');
+      document.getElementById('remWeeks').textContent = weeks.toLocaleString('es-ES');
+
+      // Jubilación
+      const retireDiffMs = Math.max(0, retireDate - now);
+      const retireDays = Math.floor(retireDiffMs / 86400000);
+      const retireYears = (retireDiffMs / (86400000 * 365.2425)).toFixed(1).replace('.', ',');
+      const retireTotalMs = Math.max(1, retireDate - workStart);
+      const retireElapsedMs = Math.max(0, Math.min(retireTotalMs, now - workStart));
+      const retirePct = ((retireElapsedMs / retireTotalMs) * 100).toFixed(1);
+
+      document.getElementById('retireTitle').textContent = `Jubilación (${retireAge} años)`;
+      document.getElementById('retirePct').textContent = `${retirePct}%`;
+      document.getElementById('retireBar').style.width = `${retirePct}%`;
+
+      if (retireDays > 0) {
+        document.getElementById('retireDays').textContent = retireDays.toLocaleString('es-ES');
+        document.getElementById('retireYearsTxt').textContent = `${retireYears} años`;
+        document.getElementById('retireMondays').textContent = `${Math.floor(retireDays / 7).toLocaleString('es-ES')} lunes`;
+      } else {
+        document.getElementById('retireDays').textContent = '¡Libre!';
+        document.getElementById('retireYearsTxt').textContent = 'Objetivo cumplido';
+        document.getElementById('retireMondays').textContent = '0 lunes';
+      }
+
+      // Mapa de años
+      const grid = document.getElementById('yearsGrid');
+      grid.innerHTML = '';
+      for (let i = 0; i < age; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'yr-dot';
+        if (i < currentAge) dot.classList.add('lived');
+        else if (i === currentAge) dot.classList.add('current');
+        else if (i < retireAge) dot.classList.add('work');
+        else dot.classList.add('retired');
+        grid.appendChild(dot);
+      }
+      document.getElementById('mapCounter').textContent = `${Math.min(currentAge, age)} / ${age} años`;
+
+      // Perspectiva
+      document.getElementById('pChristmases').textContent = countAnnualEvent(now, target, 12, 25);
+      document.getElementById('pSummers').textContent = countAnnualEvent(now, target, 6, 21);
+      document.getElementById('pWeekends').textContent = weeks.toLocaleString('es-ES');
+      document.getElementById('pAwake').textContent = (yearsNum * (16 / 24)).toFixed(1).replace('.', ',');
+      document.getElementById('pMoons').textContent = Math.floor(days / 29.53059).toLocaleString('es-ES');
+      document.getElementById('pHeartbeats').textContent = Math.floor((diffMs / 60000 * 70) / 1e6).toLocaleString('es-ES') + 'M';
+      document.getElementById('pBooks').textContent = Math.floor(yearsNum * 12).toLocaleString('es-ES');
+      document.getElementById('pTrips').textContent = Math.floor(yearsNum * 4).toLocaleString('es-ES');
+      document.getElementById('yearLbl').textContent = `Año ${now.getFullYear()}`;
+    }
+
+    function tick() {
+      const { dob, age } = getConfig();
+      const birth = new Date(dob + 'T00:00:00');
+      const target = new Date(birth.getFullYear() + age, birth.getMonth(), birth.getDate());
+      const now = new Date();
+
+      const totalMs = Math.max(1, target - birth);
+      const livedMs = Math.max(0, Math.min(totalMs, now - birth));
+      const diffMs = Math.max(0, target - now);
+
+      const pct = (livedMs / totalMs) * 100;
+      const pctFixed = pct.toFixed(6);
+      const [intPart, decPart] = pctFixed.split('.');
+
+      document.getElementById('pctMain').textContent = `${intPart}%`;
+      document.getElementById('pctDec').textContent = `,${decPart}`;
+
+      const circ = 552.92;
+      document.getElementById('lifeRing').style.strokeDashoffset = circ * (1 - pct / 100);
+
+      const days = Math.floor(diffMs / 86400000);
+      const hours = Math.floor((diffMs % 86400000) / 3600000);
+      const mins = Math.floor((diffMs % 3600000) / 60000);
+      const secs = Math.floor((diffMs % 60000) / 1000);
+
+      document.getElementById('tDays').textContent = days.toLocaleString('es-ES');
+      document.getElementById('tHours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('tMins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('tSecs').textContent = String(secs).padStart(2, '0');
+
+      // Barras día / semana / año
+      const startDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const dayPct = ((now - startDay) / 86400000 * 100).toFixed(1);
+      document.getElementById('dayPct').textContent = `${dayPct}%`;
+      document.getElementById('dayBar').style.width = `${dayPct}%`;
+
+      const dow = (now.getDay() + 6) % 7; // Lunes = 0
+      const startWeek = new Date(startDay - dow * 86400000);
+      const weekPct = ((now - startWeek) / (7 * 86400000) * 100).toFixed(1);
+      document.getElementById('weekPct').textContent = `${weekPct}%`;
+      document.getElementById('weekBar').style.width = `${weekPct}%`;
+
+      const startYear = new Date(now.getFullYear(), 0, 1);
+      const endYear = new Date(now.getFullYear() + 1, 0, 1);
+      const yearPct = ((now - startYear) / (endYear - startYear) * 100).toFixed(1);
+      document.getElementById('yearPct').textContent = `${yearPct}%`;
+      document.getElementById('yearBar').style.width = `${yearPct}%`;
+    }
+
+    function openSettings() {
+      const { dob, retireAge, age } = getConfig();
+      document.getElementById('dob').value = dob;
+      document.getElementById('retireAge').value = retireAge;
+      document.getElementById('targetAge').value = age;
+      document.querySelectorAll('.swatch').forEach(s => {
+        s.classList.toggle('selected', s.dataset.color === selectedAccent);
+      });
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function closeSettings() {
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    document.querySelectorAll('.swatch').forEach(s => {
+      s.addEventListener('click', () => {
+        document.querySelectorAll('.swatch').forEach(x => x.classList.remove('selected'));
+        s.classList.add('selected');
+        selectedAccent = s.dataset.color;
+        selectedSoft = s.dataset.soft;
+        applyTheme();
+      });
+    });
+
+    function saveConfig() {
+      const dob = document.getElementById('dob').value;
+      const retireAge = document.getElementById('retireAge').value;
+      const age = document.getElementById('targetAge').value;
+      if (dob && age > 0 && retireAge > 0) {
+        localStorage.setItem('dob', dob);
+        localStorage.setItem('retireAge', retireAge);
+        localStorage.setItem('targetAge', age);
+        localStorage.setItem('accent', selectedAccent);
+        localStorage.setItem('accentSoft', selectedSoft);
+        closeSettings();
+        buildStatic();
+        tick();
+      }
+    }
+
+    applyTheme();
+    renderQuote();
+    buildStatic();
+    tick();
+    setInterval(tick, 100);
+    setInterval(buildStatic, 60000);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
