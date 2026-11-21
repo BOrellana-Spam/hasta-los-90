@@ -12,60 +12,98 @@
       background-color: #000000;
       color: #f5f5f5;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       min-height: 100dvh;
-      padding: 24px;
+      padding: 28px 20px 40px;
     }
-    .container { max-width: 400px; width: 100%; margin: 0 auto; }
+    .container { max-width: 420px; width: 100%; margin: 0 auto; }
     h1 {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       color: #777;
-      margin-bottom: 32px;
+      margin-bottom: 20px;
       text-align: center;
     }
+    .section-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: #555;
+      margin: 26px 0 10px 4px;
+    }
     .card {
-      background: #121212;
+      background: #111111;
       border: 1px solid #222;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 14px;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
-    .value { font-size: 2.2rem; font-weight: 700; letter-spacing: -1px; }
-    .label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-    .progress-wrap { margin-top: 28px; }
+    .card.highlight {
+      border-color: #333;
+      background: #161616;
+    }
+    .value { font-size: 2rem; font-weight: 700; letter-spacing: -1px; }
+    .sub-value { font-size: 0.85rem; color: #777; font-weight: 400; margin-left: 6px; }
+    .label { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .mini-card {
+      background: #111111;
+      border: 1px solid #222;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .mini-value { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+    .mini-label { font-size: 0.78rem; color: #888; line-height: 1.3; }
+
+    .progress-wrap { margin-top: 24px; }
     .progress-header {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: #777;
       margin-bottom: 8px;
     }
-    .bar-bg { background: #1a1a1a; height: 8px; border-radius: 4px; overflow: hidden; }
+    .bar-bg { background: #1a1a1a; height: 7px; border-radius: 4px; overflow: hidden; }
     .bar-fill { background: #ffffff; height: 100%; width: 0%; transition: width 0.5s ease; }
+
+    .quote {
+      text-align: center;
+      font-size: 0.82rem;
+      color: #666;
+      font-style: italic;
+      margin-top: 26px;
+      line-height: 1.4;
+      padding: 0 10px;
+    }
+
     .config-btn {
       background: none;
       border: none;
       color: #555;
       font-size: 0.8rem;
-      margin-top: 36px;
+      margin-top: 28px;
       width: 100%;
       cursor: pointer;
       padding: 10px;
     }
     .config-panel {
       display: none;
-      background: #121212;
+      background: #111;
       border: 1px solid #222;
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 16px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
     .config-panel.open { display: block; }
     .config-panel label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 6px; }
@@ -110,18 +148,59 @@
 
     <div class="progress-wrap">
       <div class="progress-header">
-        <span>Consumido</span>
+        <span>Vida consumida</span>
         <span id="pct">0%</span>
       </div>
       <div class="bar-bg"><div class="bar-fill" id="bar"></div></div>
     </div>
 
-    <button class="config-btn" onclick="toggleConfig()">Ajustar fecha / objetivo</button>
+    <div class="section-title" id="retireTitle">Hasta la jubilación (65 años)</div>
+    <div class="card highlight">
+      <span class="label">Días restantes</span>
+      <div>
+        <span class="value" id="retireDays">--</span>
+        <span class="sub-value" id="retireYears"></span>
+      </div>
+    </div>
+
+    <div class="section-title">Perspectiva</div>
+    <div class="grid">
+      <div class="mini-card">
+        <span class="mini-value" id="christmases">--</span>
+        <span class="mini-label">Navidades por vivir</span>
+      </div>
+      <div class="mini-card">
+        <span class="mini-value" id="summers">--</span>
+        <span class="mini-label">Veranos restantes</span>
+      </div>
+      <div class="mini-card">
+        <span class="mini-value" id="weekends">--</span>
+        <span class="mini-label">Fines de semana</span>
+      </div>
+      <div class="mini-card">
+        <span class="mini-value" id="moons">--</span>
+        <span class="mini-label">Lunas llenas</span>
+      </div>
+      <div class="mini-card">
+        <span class="mini-value" id="awakeYears">--</span>
+        <span class="mini-label">Años despierto (si duermes 8h)</span>
+      </div>
+      <div class="mini-card">
+        <span class="mini-value" id="birthdays">--</span>
+        <span class="mini-label">Cumpleaños por celebrar</span>
+      </div>
+    </div>
+
+    <p class="quote" id="quote"></p>
+
+    <button class="config-btn" onclick="toggleConfig()">Ajustar fechas / objetivos</button>
 
     <div class="config-panel" id="configPanel">
       <label for="dob">Fecha de nacimiento</label>
       <input type="date" id="dob">
-      <label for="targetAge">Edad objetivo</label>
+      <label for="retireAge">Edad de jubilación</label>
+      <input type="number" id="retireAge" min="18" max="90">
+      <label for="targetAge">Esperanza de vida</label>
       <input type="number" id="targetAge" min="1" max="120">
       <button class="save-btn" onclick="saveConfig()">Guardar</button>
     </div>
@@ -129,20 +208,34 @@
 
   <script>
     const DEFAULT_DOB = '1980-06-19';
+    const DEFAULT_RETIRE = 65;
     const DEFAULT_AGE = 90;
 
     function getConfig() {
       return {
         dob: localStorage.getItem('dob') || DEFAULT_DOB,
+        retireAge: parseInt(localStorage.getItem('retireAge') || DEFAULT_RETIRE, 10),
         age: parseInt(localStorage.getItem('targetAge') || DEFAULT_AGE, 10)
       };
     }
 
+    function countAnnualEvent(now, target, month, day) {
+      let count = 0;
+      for (let y = now.getFullYear(); y <= target.getFullYear(); y++) {
+        const eventDate = new Date(y, month - 1, day);
+        if (eventDate >= now && eventDate <= target) count++;
+      }
+      return count;
+    }
+
     function update() {
-      const { dob, age } = getConfig();
+      const { dob, retireAge, age } = getConfig();
       const birth = new Date(dob + 'T00:00:00');
       const target = new Date(birth);
       target.setFullYear(birth.getFullYear() + age);
+
+      const retireDate = new Date(birth);
+      retireDate.setFullYear(birth.getFullYear() + retireAge);
 
       const now = new Date();
       const diffMs = Math.max(0, target - now);
@@ -151,30 +244,64 @@
 
       const days = Math.floor(diffMs / 86400000);
       const weeks = Math.floor(days / 7);
-      const years = (diffMs / (86400000 * 365.2425)).toFixed(2);
+      const yearsNum = diffMs / (86400000 * 365.2425);
       const pct = Math.min(100, (livedMs / totalMs) * 100).toFixed(1);
 
+      // Jubilación
+      const retireDiffMs = Math.max(0, retireDate - now);
+      const retireDays = Math.floor(retireDiffMs / 86400000);
+      const retireYears = (retireDiffMs / (86400000 * 365.2425)).toFixed(1).replace('.', ',');
+
+      // Datos curiosos
+      const christmases = countAnnualEvent(now, target, 12, 25);
+      const summers = countAnnualEvent(now, target, 6, 21);
+      const birthdays = countAnnualEvent(now, target, birth.getMonth() + 1, birth.getDate());
+      const moons = Math.floor(days / 29.53059);
+      const awakeYears = (yearsNum * (16 / 24)).toFixed(1).replace('.', ',');
+
       document.getElementById('title').textContent = `Tiempo hasta los ${age} años`;
-      document.getElementById('years').textContent = years.replace('.', ',');
+      document.getElementById('years').textContent = yearsNum.toFixed(2).replace('.', ',');
       document.getElementById('weeks').textContent = weeks.toLocaleString('es-ES');
       document.getElementById('days').textContent = days.toLocaleString('es-ES');
       document.getElementById('pct').textContent = `${pct}%`;
       document.getElementById('bar').style.width = `${pct}%`;
+
+      document.getElementById('retireTitle').textContent = `Hasta la jubilación (${retireAge} años)`;
+      if (retireDays > 0) {
+        document.getElementById('retireDays').textContent = retireDays.toLocaleString('es-ES');
+        document.getElementById('retireYears').textContent = `(${retireYears} años)`;
+      } else {
+        document.getElementById('retireDays').textContent = '¡Libre!';
+        document.getElementById('retireYears').textContent = '';
+      }
+
+      document.getElementById('christmases').textContent = christmases;
+      document.getElementById('summers').textContent = summers;
+      document.getElementById('weekends').textContent = weeks.toLocaleString('es-ES');
+      document.getElementById('moons').textContent = moons.toLocaleString('es-ES');
+      document.getElementById('awakeYears').textContent = awakeYears;
+      document.getElementById('birthdays').textContent = birthdays;
+
+      document.getElementById('quote').textContent = 
+        `De los ${yearsNum.toFixed(0)} años que quedan, pasarás unos ${(yearsNum / 3).toFixed(0)} durmiendo. Aprovecha el resto.`;
     }
 
     function toggleConfig() {
       const panel = document.getElementById('configPanel');
-      const { dob, age } = getConfig();
+      const { dob, retireAge, age } = getConfig();
       document.getElementById('dob').value = dob;
+      document.getElementById('retireAge').value = retireAge;
       document.getElementById('targetAge').value = age;
       panel.classList.toggle('open');
     }
 
     function saveConfig() {
       const dob = document.getElementById('dob').value;
+      const retireAge = document.getElementById('retireAge').value;
       const age = document.getElementById('targetAge').value;
-      if (dob && age > 0) {
+      if (dob && age > 0 && retireAge > 0) {
         localStorage.setItem('dob', dob);
+        localStorage.setItem('retireAge', retireAge);
         localStorage.setItem('targetAge', age);
         document.getElementById('configPanel').classList.remove('open');
         update();
