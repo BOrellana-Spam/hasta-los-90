@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <title>Hasta los 90</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #000000;
+      color: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 24px;
+    }
+    .container { max-width: 400px; width: 100%; margin: 0 auto; }
+    h1 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #777;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .card {
+      background: #121212;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .value { font-size: 2.2rem; font-weight: 700; letter-spacing: -1px; }
+    .label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+    .progress-wrap { margin-top: 28px; }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #777;
+      margin-bottom: 8px;
+    }
+    .bar-bg { background: #1a1a1a; height: 8px; border-radius: 4px; overflow: hidden; }
+    .bar-fill { background: #ffffff; height: 100%; width: 0%; transition: width 0.5s ease; }
+    .config-btn {
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 0.8rem;
+      margin-top: 36px;
+      width: 100%;
+      cursor: pointer;
+      padding: 10px;
+    }
+    .config-panel {
+      display: none;
+      background: #121212;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+    .config-panel.open { display: block; }
+    .config-panel label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 6px; }
+    .config-panel input {
+      width: 100%;
+      background: #000;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+    .save-btn {
+      width: 100%;
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">Tiempo hasta los 90 años</h1>
+
+    <div class="card">
+      <span class="label">Años</span>
+      <span class="value" id="years">--</span>
+    </div>
+    <div class="card">
+      <span class="label">Semanas</span>
+      <span class="value" id="weeks">--</span>
+    </div>
+    <div class="card">
+      <span class="label">Días</span>
+      <span class="value" id="days">--</span>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span>Consumido</span>
+        <span id="pct">0%</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" id="bar"></div></div>
+    </div>
+
+    <button class="config-btn" onclick="toggleConfig()">Ajustar fecha / objetivo</button>
+
+    <div class="config-panel" id="configPanel">
+      <label for="dob">Fecha de nacimiento</label>
+      <input type="date" id="dob">
+      <label for="targetAge">Edad objetivo</label>
+      <input type="number" id="targetAge" min="1" max="120">
+      <button class="save-btn" onclick="saveConfig()">Guardar</button>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_DOB = '1980-06-19';
+    const DEFAULT_AGE = 90;
+
+    function getConfig() {
+      return {
+        dob: localStorage.getItem('dob') || DEFAULT_DOB,
+        age: parseInt(localStorage.getItem('targetAge') || DEFAULT_AGE, 10)
+      };
+    }
+
+    function update() {
+      const { dob, age } = getConfig();
+      const birth = new Date(dob + 'T00:00:00');
+      const target = new Date(birth);
+      target.setFullYear(birth.getFullYear() + age);
+
+      const now = new Date();
+      const diffMs = Math.max(0, target - now);
+      const totalMs = target - birth;
+      const livedMs = Math.max(0, now - birth);
+
+      const days = Math.floor(diffMs / 86400000);
+      const weeks = Math.floor(days / 7);
+      const years = (diffMs / (86400000 * 365.2425)).toFixed(2);
+      const pct = Math.min(100, (livedMs / totalMs) * 100).toFixed(1);
+
+      document.getElementById('title').textContent = `Tiempo hasta los ${age} años`;
+      document.getElementById('years').textContent = years.replace('.', ',');
+      document.getElementById('weeks').textContent = weeks.toLocaleString('es-ES');
+      document.getElementById('days').textContent = days.toLocaleString('es-ES');
+      document.getElementById('pct').textContent = `${pct}%`;
+      document.getElementById('bar').style.width = `${pct}%`;
+    }
+
+    function toggleConfig() {
+      const panel = document.getElementById('configPanel');
+      const { dob, age } = getConfig();
+      document.getElementById('dob').value = dob;
+      document.getElementById('targetAge').value = age;
+      panel.classList.toggle('open');
+    }
+
+    function saveConfig() {
+      const dob = document.getElementById('dob').value;
+      const age = document.getElementById('targetAge').value;
+      if (dob && age > 0) {
+        localStorage.setItem('dob', dob);
+        localStorage.setItem('targetAge', age);
+        document.getElementById('configPanel').classList.remove('open');
+        update();
+      }
+    }
+
+    update();
+    setInterval(update, 60000);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
