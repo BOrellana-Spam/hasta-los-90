@@ -1,4 +1,4 @@
-const CACHE = 'memento-v4';
+const CACHE = 'memento-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -19,7 +19,7 @@ self.addEventListener('activate', event => {
     caches.keys()
       .then(keys => Promise.all(
         keys
-          .filter(key => key !== CACHE)
+          .filter(key => key.startsWith('memento-') && key !== CACHE)
           .map(key => caches.delete(key))
       ))
       .then(() => self.clients.claim())
@@ -37,8 +37,12 @@ self.addEventListener('fetch', event => {
       try {
         const response = await fetch(request);
         if (response.ok) {
-          const cache = await caches.open(CACHE);
-          await cache.put(request, response.clone());
+          try {
+            const cache = await caches.open(CACHE);
+            await cache.put(request, response.clone());
+          } catch (cacheErr) {
+            console.warn('Error actualizando caché:', cacheErr);
+          }
         }
         return response;
       } catch (error) {
