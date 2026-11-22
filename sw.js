@@ -1,4 +1,4 @@
-const CACHE = 'memento-v5';
+const CACHE = 'memento-v5.1';
 const ASSETS = [
   './',
   './index.html',
@@ -34,19 +34,24 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(
     (async () => {
+      const cache = await caches.open(CACHE);
       try {
         const response = await fetch(request);
         if (response.ok) {
           try {
-            const cache = await caches.open(CACHE);
             await cache.put(request, response.clone());
           } catch (cacheErr) {
             console.warn('Error actualizando caché:', cacheErr);
           }
+          return response;
+        }
+        if (response.status >= 500) {
+          const cached = await cache.match(request);
+          if (cached) return cached;
         }
         return response;
       } catch (error) {
-        const cached = await caches.match(request);
+        const cached = await cache.match(request);
         if (cached) return cached;
         return new Response('Sin conexión', {
           status: 503,
