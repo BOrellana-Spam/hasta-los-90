@@ -1,28 +1,54 @@
-const CACHE = 'memento-v3';
-const ASSETS = ['./', './index.html', './manifest.json', './icon.png'];
+const CACHE = 'memento-v4';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon.png'
+];
 
-self.addEventListener('install', e => {
-  self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    fetch(e.request)
-      .then(res => {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-        return res;
-      })
-      .catch(() => caches.match(e.request))
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(
+        keys
+          .filter(key => key !== CACHE)
+          .map(key => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
+
+  event.respondWith(
+    (async () => {
+      try {
+        const response = await fetch(request);
+        if (response.ok) {
+          const cache = await caches.open(CACHE);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      } catch (error) {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        return new Response('Sin conexión', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        });
+      }
+    })()
   );
 });
