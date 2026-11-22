@@ -1,6 +1,6 @@
 {
-  "name": "Tiempo hasta los 90",
-  "short_name": "90 Años",
+  "name": "Memento Mori: Cuenta Atrás",
+  "short_name": "Memento",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
