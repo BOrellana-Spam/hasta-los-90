@@ -28,6 +28,7 @@
       background-color: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
       min-height: 100dvh;
       padding: env(safe-area-inset-top, 16px) 18px calc(84px + env(safe-area-inset-bottom, 12px));
       overflow-x: hidden;
@@ -275,12 +276,16 @@
     }
 
     .quote-card {
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
       background: var(--card);
       border: 1px solid var(--card-border);
       border-radius: 18px;
       padding: 16px 18px;
       cursor: pointer;
       transition: border-color 0.2s;
+      display: block;
     }
     .quote-card:active { border-color: var(--accent); }
     .quote-text {
@@ -451,6 +456,7 @@
       border-radius: 24px 24px 0 0;
       width: 100%;
       max-width: 440px;
+      max-height: 90vh;
       max-height: 90dvh;
       overflow-y: auto;
       padding: 22px 20px calc(24px + env(safe-area-inset-bottom, 0px));
@@ -547,7 +553,7 @@
         <span class="brand-dot"></span>
         <span>MEMENTO MORI</span>
       </div>
-      <button class="icon-btn" onclick="openSettings()" aria-label="Ajustes">
+      <button type="button" class="icon-btn" onclick="openSettings()" aria-label="Ajustes">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -557,7 +563,7 @@
 
     <div class="update-banner" id="updateBanner">
       <span>Nueva versión lista</span>
-      <button onclick="window.location.reload()">Actualizar</button>
+      <button type="button" onclick="window.location.reload()">Actualizar</button>
     </div>
 
     <section id="tab-home" class="tab-view active">
@@ -570,7 +576,7 @@
           <div class="ring-center">
             <span class="ring-pct" id="pctMain">--%</span>
             <span class="ring-decimals" id="pctDec">,000000</span>
-            <span class="ring-sub" id="heroSub">Hasta los 90</span>
+            <span class="ring-sub" id="heroSub">Hasta los 90 años</span>
           </div>
         </div>
 
@@ -620,13 +626,13 @@
         </div>
       </div>
 
-      <div class="quote-card" onclick="nextQuote()">
+      <button type="button" class="quote-card" onclick="nextQuote()">
         <p class="quote-text" id="quoteText"></p>
         <div class="quote-meta">
           <span id="quoteAuthor"></span>
           <span>Toca para otra ↻</span>
         </div>
-      </div>
+      </button>
     </section>
 
     <section id="tab-map" class="tab-view">
@@ -725,15 +731,15 @@
   </div>
 
   <nav>
-    <button class="nav-btn active" onclick="switchTab('home', this)">
+    <button type="button" class="nav-btn active" onclick="switchTab('home', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
       Resumen
     </button>
-    <button class="nav-btn" onclick="switchTab('map', this)">
+    <button type="button" class="nav-btn" onclick="switchTab('map', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
       Mapa
     </button>
-    <button class="nav-btn" onclick="switchTab('data', this)">
+    <button type="button" class="nav-btn" onclick="switchTab('data', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
       Perspectiva
     </button>
@@ -743,7 +749,7 @@
     <div class="modal">
       <div class="modal-hdr">
         <h2>Ajustes</h2>
-        <button class="close-btn" onclick="closeSettings()">×</button>
+        <button type="button" class="close-btn" onclick="closeSettings()" aria-label="Cerrar">×</button>
       </div>
       <div class="field">
         <label for="dob">Fecha de nacimiento</label>
@@ -751,7 +757,7 @@
       </div>
       <div class="field">
         <label for="retireAge">Edad de jubilación</label>
-        <input type="number" id="retireAge" min="18" max="90">
+        <input type="number" id="retireAge" min="18" max="120">
       </div>
       <div class="field">
         <label for="targetAge">Esperanza de vida</label>
@@ -760,17 +766,17 @@
       <div class="field">
         <label>Color de acento</label>
         <div class="swatches" id="swatches">
-          <div class="swatch" data-color="#f59e0b" data-soft="rgba(245,158,11,0.14)" style="background:#f59e0b"></div>
-          <div class="swatch" data-color="#ffffff" data-soft="rgba(255,255,255,0.12)" style="background:#ffffff"></div>
-          <div class="swatch" data-color="#38bdf8" data-soft="rgba(56,189,248,0.14)" style="background:#38bdf8"></div>
-          <div class="swatch" data-color="#10b981" data-soft="rgba(16,185,129,0.14)" style="background:#10b981"></div>
+          <button type="button" class="swatch" data-color="#f59e0b" style="background:#f59e0b" aria-label="Ámbar"></button>
+          <button type="button" class="swatch" data-color="#ffffff" style="background:#ffffff" aria-label="Blanco"></button>
+          <button type="button" class="swatch" data-color="#38bdf8" style="background:#38bdf8" aria-label="Azul"></button>
+          <button type="button" class="swatch" data-color="#10b981" style="background:#10b981" aria-label="Verde"></button>
         </div>
       </div>
       <div class="error-msg" id="configError"></div>
-      <button class="save-btn" onclick="saveConfig()">Guardar cambios</button>
+      <button type="button" class="save-btn" onclick="saveConfig()">Guardar cambios</button>
       <div class="backup-row">
-        <button class="sec-btn" onclick="exportConfig()">Exportar copia</button>
-        <button class="sec-btn" onclick="document.getElementById('importFile').click()">Importar copia</button>
+        <button type="button" class="sec-btn" onclick="exportConfig()">Exportar copia</button>
+        <button type="button" class="sec-btn" onclick="document.getElementById('importFile').click()">Importar copia</button>
         <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importConfig(event)">
       </div>
     </div>
@@ -790,6 +796,13 @@
       { t: "Algún día harás algo por última vez sin saber que es la última vez.", a: "Sam Harris" }
     ];
 
+    const ALLOWED_THEMES = {
+      '#f59e0b': 'rgba(245, 158, 11, 0.14)',
+      '#ffffff': 'rgba(255, 255, 255, 0.12)',
+      '#38bdf8': 'rgba(56, 189, 248, 0.14)',
+      '#10b981': 'rgba(16, 185, 129, 0.14)'
+    };
+
     function safeGet(key, fallback) {
       try {
         const val = localStorage.getItem(key);
@@ -802,9 +815,15 @@
     function safeSet(key, val) {
       try {
         localStorage.setItem(key, String(val));
+        return true;
       } catch (e) {
         console.warn('Error guardando en localStorage:', e);
+        return false;
       }
+    }
+
+    function resolveAccent(color) {
+      return Object.prototype.hasOwnProperty.call(ALLOWED_THEMES, color) ? color : '#f59e0b';
     }
 
     function parseLocalDate(isoStr) {
@@ -877,8 +896,8 @@
     }
 
     let quoteIdx = Math.floor(Date.now() / 86400000) % QUOTES.length;
-    let selectedAccent = safeGet('accent', '#f59e0b');
-    let selectedSoft = safeGet('accentSoft', 'rgba(245,158,11,0.14)');
+    let savedAccent = resolveAccent(safeGet('accent', '#f59e0b'));
+    let draftAccent = savedAccent;
     let timerId = null;
     let lastStaticDate = '';
 
@@ -890,19 +909,20 @@
       const parsedDob = parseLocalDate(rawDob);
       const dob = (parsedDob && parsedDob <= today) ? rawDob : '1980-06-19';
 
-      const parsedAge = parseInt(safeGet('targetAge', '90'), 10);
-      const age = (parsedAge >= 30 && parsedAge <= 120) ? parsedAge : 90;
+      const parsedAge = Number(safeGet('targetAge', '90'));
+      const age = (Number.isInteger(parsedAge) && parsedAge >= 30 && parsedAge <= 120) ? parsedAge : 90;
 
-      const parsedRetire = parseInt(safeGet('retireAge', '65'), 10);
-      let retireAge = (parsedRetire >= 18 && parsedRetire <= 90) ? parsedRetire : 65;
+      const parsedRetire = Number(safeGet('retireAge', '65'));
+      let retireAge = (Number.isInteger(parsedRetire) && parsedRetire >= 18 && parsedRetire <= 120) ? parsedRetire : 65;
       if (retireAge > age) retireAge = age;
 
       return { dob, retireAge, age };
     }
 
-    function applyTheme() {
-      document.documentElement.style.setProperty('--accent', selectedAccent);
-      document.documentElement.style.setProperty('--accent-soft', selectedSoft);
+    function applyTheme(accent) {
+      const valid = resolveAccent(accent);
+      document.documentElement.style.setProperty('--accent', valid);
+      document.documentElement.style.setProperty('--accent-soft', ALLOWED_THEMES[valid]);
     }
 
     function switchTab(id, btn) {
@@ -1072,17 +1092,19 @@
 
     function openSettings() {
       const { dob, retireAge, age } = getConfig();
+      draftAccent = savedAccent;
       document.getElementById('dob').value = dob;
       document.getElementById('retireAge').value = retireAge;
       document.getElementById('targetAge').value = age;
       document.getElementById('configError').textContent = '';
       document.querySelectorAll('.swatch').forEach(s => {
-        s.classList.toggle('selected', s.dataset.color === selectedAccent);
+        s.classList.toggle('selected', s.dataset.color === draftAccent);
       });
       document.getElementById('modal').classList.add('open');
     }
 
     function closeSettings() {
+      applyTheme(savedAccent);
       document.getElementById('modal').classList.remove('open');
     }
 
@@ -1090,45 +1112,48 @@
       s.addEventListener('click', () => {
         document.querySelectorAll('.swatch').forEach(x => x.classList.remove('selected'));
         s.classList.add('selected');
-        selectedAccent = s.dataset.color;
-        selectedSoft = s.dataset.soft;
-        applyTheme();
+        draftAccent = resolveAccent(s.dataset.color);
+        applyTheme(draftAccent);
       });
     });
 
-    function saveConfig() {
-      const dob = document.getElementById('dob').value;
-      const retireAge = parseInt(document.getElementById('retireAge').value, 10);
-      const age = parseInt(document.getElementById('targetAge').value, 10);
-      const err = document.getElementById('configError');
-
+    function validateInputs(dob, retireAge, age) {
       const birth = parseLocalDate(dob);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      if (!birth || birth > today) {
-        err.textContent = 'Introduce una fecha de nacimiento válida.';
-        return;
-      }
-      if (isNaN(age) || age < 30 || age > 120) {
-        err.textContent = 'La esperanza de vida debe estar entre 30 y 120.';
-        return;
-      }
-      if (isNaN(retireAge) || retireAge < 18 || retireAge > 90) {
-        err.textContent = 'La jubilación debe estar entre 18 y 90.';
-        return;
-      }
-      if (retireAge > age) {
-        err.textContent = 'La jubilación no puede superar la esperanza de vida.';
+      if (!birth || birth > today) return 'Introduce una fecha de nacimiento válida.';
+      if (!Number.isInteger(age) || age < 30 || age > 120) return 'La esperanza de vida debe ser un entero entre 30 y 120.';
+      if (!Number.isInteger(retireAge) || retireAge < 18 || retireAge > 120) return 'La jubilación debe ser un entero entre 18 y 120.';
+      if (retireAge > age) return 'La jubilación no puede superar la esperanza de vida.';
+      return null;
+    }
+
+    function saveConfig() {
+      const dob = document.getElementById('dob').value;
+      const retireAge = Number(document.getElementById('retireAge').value);
+      const age = Number(document.getElementById('targetAge').value);
+      const err = document.getElementById('configError');
+
+      const validationError = validateInputs(dob, retireAge, age);
+      if (validationError) {
+        err.textContent = validationError;
         return;
       }
 
+      const ok =
+        safeSet('dob', dob) &&
+        safeSet('retireAge', retireAge) &&
+        safeSet('targetAge', age) &&
+        safeSet('accent', draftAccent);
+
+      if (!ok) {
+        err.textContent = 'No se pudo guardar en el dispositivo (almacenamiento bloqueado).';
+        return;
+      }
+
+      savedAccent = draftAccent;
       err.textContent = '';
-      safeSet('dob', dob);
-      safeSet('retireAge', retireAge);
-      safeSet('targetAge', age);
-      safeSet('accent', selectedAccent);
-      safeSet('accentSoft', selectedSoft);
       closeSettings();
       startClock();
     }
@@ -1136,8 +1161,7 @@
     function exportConfig() {
       const data = {
         ...getConfig(),
-        accent: selectedAccent,
-        accentSoft: selectedSoft
+        accent: savedAccent
       };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -1145,45 +1169,51 @@
       a.href = url;
       a.download = 'memento-mori-backup.json';
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     function importConfig(event) {
       const file = event.target.files[0];
       if (!file) return;
+      const err = document.getElementById('configError');
       const reader = new FileReader();
+
+      reader.onerror = () => {
+        err.textContent = 'No se pudo leer el archivo seleccionado.';
+        event.target.value = '';
+      };
+
       reader.onload = () => {
         try {
           const data = JSON.parse(reader.result);
-          const birth = parseLocalDate(data.dob);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const age = parseInt(data.age, 10);
-          const retireAge = parseInt(data.retireAge, 10);
-          if (!birth || birth > today || age < 30 || age > 120 || retireAge < 18 || retireAge > age) {
-            throw new Error('Datos inválidos');
-          }
-          safeSet('dob', data.dob);
-          safeSet('targetAge', age);
-          safeSet('retireAge', retireAge);
-          if (data.accent && data.accentSoft) {
-            selectedAccent = data.accent;
-            selectedSoft = data.accentSoft;
-            safeSet('accent', selectedAccent);
-            safeSet('accentSoft', selectedSoft);
-            applyTheme();
-          }
+          const age = Number(data.age);
+          const retireAge = Number(data.retireAge);
+          const validationError = validateInputs(data.dob, retireAge, age);
+          if (validationError) throw new Error(validationError);
+
+          const importedAccent = resolveAccent(data.accent);
+          const ok =
+            safeSet('dob', data.dob) &&
+            safeSet('targetAge', age) &&
+            safeSet('retireAge', retireAge) &&
+            safeSet('accent', importedAccent);
+
+          if (!ok) throw new Error('No se pudo guardar en el dispositivo.');
+
+          savedAccent = importedAccent;
+          draftAccent = importedAccent;
+          err.textContent = '';
           closeSettings();
           startClock();
         } catch (e) {
-          document.getElementById('configError').textContent = 'Archivo de copia no válido.';
+          err.textContent = e.message || 'Archivo de copia no válido.';
         }
         event.target.value = '';
       };
       reader.readAsText(file);
     }
 
-    applyTheme();
+    applyTheme(savedAccent);
     renderQuote();
     startClock();
 
